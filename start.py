@@ -54,8 +54,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host", default="127.0.0.1",
                         help="bind address (default: loopback only)")
-    parser.add_argument("--port", type=int, default=8000,
-                        help="preferred port (default: 8000)")
+    parser.add_argument("--port", type=int, default=8080,
+                        help="preferred port (default: 8080)")
     parser.add_argument("--no-fallback", action="store_true",
                         help="fail instead of trying fallback ports")
     parser.add_argument("--no-open", action="store_true",
