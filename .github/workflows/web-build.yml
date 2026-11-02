@@ -114,6 +114,7 @@ jobs:
           time.sleep(45)
           PY
           BLOCKER_PID=$!
+          sleep 1
           python start.py --no-open > /tmp/aetherface-server.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" "$BLOCKER_PID" 2>/dev/null || true' EXIT
