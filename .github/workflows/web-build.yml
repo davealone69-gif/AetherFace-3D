@@ -1,0 +1,102 @@
+name: AetherFace web build
+
+on:
+  push:
+    branches:
+      - feature/studio-repair-autostart-2026-11-02
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aetherface-web-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Validate and package PWA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate required app files and HTML references
+        run: |
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import re, sys
+
+          root = Path('.')
+          required = [
+              'index.html', 'app.js', 'styles.css', 'manifest.webmanifest',
+              'start.py', 'start.sh', 'start.bat', 'assets/aetherface-icon.svg'
+          ]
+          missing = [p for p in required if not (root / p).is_file()]
+          if missing:
+              raise SystemExit('Missing required files: ' + ', '.join(missing))
+
+          html = (root / 'index.html').read_text(encoding='utf-8')
+          class Checker(HTMLParser):
+              def error(self, message):
+                  raise RuntimeError(message)
+          Checker().feed(html)
+
+          refs = re.findall(r'''(?:src|href)=["']([^"']+)["']''', html)
+          local = [r.split('#', 1)[0].split('?', 1)[0] for r in refs
+                   if r and not r.startswith(('http://', 'https://', 'data:', '#', 'mailto:'))]
+          missing_refs = [r for r in local if r and not (root / r).exists()]
+          if missing_refs:
+              raise SystemExit('Broken local HTML references: ' + ', '.join(missing_refs))
+          print('PASS: required files, HTML parsing, and local references')
+          PY
+
+      - name: Check JavaScript syntax
+        run: |
+          node --input-type=module --check < app.js
+          node --check script.js
+
+      - name: Smoke-test local HTTP server
+        run: |
+          python start.py --host 127.0.0.1 --port 8765 --no-open > /tmp/aetherface-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:8765/ -o /tmp/aetherface-index.html; then
+              break
+            fi
+            sleep 1
+          done
+          grep -q 'AETHERFACE' /tmp/aetherface-index.html
+          curl --fail --silent http://127.0.0.1:8765/app.js -o /dev/null
+          curl --fail --silent http://127.0.0.1:8765/styles.css -o /dev/null
+          echo 'PASS: app served over HTTP'
+
+      - name: Package distributable
+        run: |
+          mkdir -p dist
+          zip -qr dist/AetherFace-3D-Studio-web.zip . \
+            -x '.git/*' '.github/*' 'dist/*' '.DS_Store'
+          test -s dist/AetherFace-3D-Studio-web.zip
+          sha256sum dist/AetherFace-3D-Studio-web.zip | tee dist/SHA256SUMS.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AetherFace-3D-Studio-web
+          path: |
+            dist/AetherFace-3D-Studio-web.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
