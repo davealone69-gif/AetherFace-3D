@@ -54,11 +54,11 @@ function makeHeadGeometry() {
   return geometry;
 }
 function addEye(side) {
-  const socket = ellipsoid([side * 0.285, 0.12, 0.57], [0.205, 0.135, 0.105], darkMaterial);
-  const eyeball = ellipsoid([side * 0.285, 0.12, 0.635], [0.158, 0.082, 0.065], eyeWhite);
-  const iris = ellipsoid([side * 0.285, 0.115, 0.691], [0.055, 0.058, 0.023], irisMaterial, character, 32);
-  const pupil = ellipsoid([side * 0.285, 0.115, 0.711], [0.025, 0.036, 0.012], pupilMaterial, character, 24);
-  const brow = ellipsoid([side * 0.29, 0.285, 0.57], [0.22, 0.052, 0.09], activeFaceMaterial());
+  const socket = ellipsoid([side * 0.285, 0.12, 0.70], [0.205, 0.135, 0.105], darkMaterial);
+  const eyeball = ellipsoid([side * 0.285, 0.12, 0.765], [0.158, 0.082, 0.065], eyeWhite);
+  const iris = ellipsoid([side * 0.285, 0.115, 0.825], [0.055, 0.058, 0.023], irisMaterial, character, 32);
+  const pupil = ellipsoid([side * 0.285, 0.115, 0.845], [0.025, 0.036, 0.012], pupilMaterial, character, 24);
+  const brow = ellipsoid([side * 0.29, 0.285, 0.69], [0.22, 0.052, 0.09], activeFaceMaterial());
   eyes.push({ socket, eyeball }); irises.push(iris, pupil); brows.push(brow);
 }
 function buildCharacter() {
@@ -83,17 +83,17 @@ function buildCharacter() {
   }
 
   // Nose bridge, rounded tip and nostrils, all joined visually to the face.
-  ellipsoid([0, 0.00, 0.61], [0.085, 0.23, 0.12], skin);
-  ellipsoid([0, -0.15, 0.70], [0.12, 0.085, 0.12], skin);
-  for (const side of [-1, 1]) ellipsoid([side * 0.075, -0.205, 0.68], [0.032, 0.018, 0.018], darkMaterial);
+  ellipsoid([0, 0.00, 0.70], [0.085, 0.23, 0.12], skin);
+  ellipsoid([0, -0.15, 0.77], [0.12, 0.085, 0.12], skin);
+  for (const side of [-1, 1]) ellipsoid([side * 0.075, -0.205, 0.755], [0.032, 0.018, 0.018], darkMaterial);
 
   // Mouth, chin and a separate lower jaw make the jaw-width control meaningful.
   jaw = ellipsoid([0, -0.49, 0.43], [0.48, 0.31, 0.22], skin);
-  mouth = ellipsoid([0, -0.365, 0.635], [0.16, 0.035, 0.025], darkMaterial);
-  upperLip = ellipsoid([0, -0.335, 0.648], [0.16, 0.035, 0.025], lipMaterial);
-  lowerLip = ellipsoid([0, -0.405, 0.65], [0.145, 0.032, 0.025], lipMaterial);
+  mouth = ellipsoid([0, -0.365, 0.69], [0.16, 0.035, 0.025], darkMaterial);
+  upperLip = ellipsoid([0, -0.335, 0.70], [0.16, 0.035, 0.025], lipMaterial);
+  lowerLip = ellipsoid([0, -0.405, 0.705], [0.145, 0.032, 0.025], lipMaterial);
   for (const side of [-1, 1]) {
-    const fang = mesh(new THREE.ConeGeometry(0.035, 0.16, 20), toothMaterial, [side * 0.105, -0.43, 0.66], [1, 1, 1]);
+    const fang = mesh(new THREE.ConeGeometry(0.035, 0.16, 20), toothMaterial, [side * 0.105, -0.43, 0.71], [1, 1, 1]);
     fangs.push(fang);
   }
   applyShape();
