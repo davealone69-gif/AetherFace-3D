@@ -1,101 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AetherFace 3D</title>
-    <meta
-      name="description"
-      content="AetherFace 3D — immersive futuristic interface showcase"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="bg-grid"></div>
-    <div class="aurora aurora-one"></div>
-    <div class="aurora aurora-two"></div>
-
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark">A</span>
-        <span class="brand-text">AetherFace 3D</span>
-      </div>
-      <nav class="nav">
-        <a href="#about">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button class="nav-button">Launch Demo</button>
-    </header>
-
-    <main class="hero">
-      <section class="hero-copy">
-        <p class="eyebrow">NEXT-GEN HUMAN INTERFACE</p>
-        <h1>See identity in motion.</h1>
-        <p class="subtitle">
-          AetherFace 3D blends face-driven emotion mapping, cinematic depth, and
-          immersive UI to create a living digital presence.
-        </p>
-
-        <div class="cta-row">
-          <button class="primary">Enter Experience</button>
-          <button class="secondary">Explore System</button>
-        </div>
-
-        <div class="stats" id="about">
-          <div>
-            <strong>4.8x</strong>
-            <span>faster perception</span>
-          </div>
-          <div>
-            <strong>360°</strong>
-            <span>depth-aware motion</span>
-          </div>
-          <div>
-            <strong>24/7</strong>
-            <span>adaptive presence</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="hero-visual" id="experience">
-        <div class="orbital-shell">
-          <div class="ring ring-one"></div>
-          <div class="ring ring-two"></div>
-          <div class="ring ring-three"></div>
-          <div class="face-card">
-            <div class="face-glow"></div>
-            <div class="face-core">
-              <span class="eye left"></span>
-              <span class="eye right"></span>
-              <span class="smile"></span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <section class="feature-strip" id="contact">
-      <article>
-        <label>Emotive Layers</label>
-        <h3>Adaptive presence engine</h3>
-      </article>
-      <article>
-        <label>Spatial Synthesis</label>
-        <h3>Depth-rich AI visualization</h3>
-      </article>
-      <article>
-        <label>Signal Design</label>
-        <h3>Responsive human interface</h3>
-      </article>
-    </section>
-
-    <script src="script.js"></script>
-  </body>
-</html>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070a13"><meta name="description" content="AetherFace 3D Studio. Build, shape and voice-test stylized digital faces.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/aetherface-icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="assets/aetherface-icon.svg">
+<link rel="stylesheet" href="styles.css"><title>AetherFace 3D Studio</title>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="#"><img src="assets/aetherface-icon.svg" alt=""><span>AETHERFACE <b>3D</b></span></a><div class="top-actions"><span id="engineStatus" class="status">Starting studio…</span><button id="installBtn" class="quiet" hidden>Install app</button></div></header>
+<main class="workspace">
+<section class="viewport-panel"><div class="viewport-head"><div><p class="eyebrow">CHARACTER WORKSHOP</p><h1>Shape a presence.</h1></div><div class="view-actions"><button id="resetView" class="quiet">Reset view</button><button id="screenshot" class="quiet">PNG</button><button id="exportObj" class="primary small">Export OBJ</button></div></div>
+<div id="viewport" class="viewport"><canvas id="scene"></canvas><div class="viewport-hint">Drag to rotate · scroll or pinch to zoom</div><div class="crosshair">AF / 3D</div></div>
+<div class="viewport-foot"><span>LIVE PREVIEW</span><span id="fps">WEBGL</span><span id="modelInfo">Procedural head · editable</span></div></section>
+<aside class="controls">
+<div class="tabs" role="tablist"><button class="tab active" data-tab="shape">Shape</button><button class="tab" data-tab="surface">Surface</button><button class="tab" data-tab="voice">Voice</button></div>
+<section class="tab-content active" id="tab-shape"><label class="field-label">BASE CHARACTER</label><div class="presets"><button data-preset="human" class="preset active">Human</button><button data-preset="vampire" class="preset">Vampire</button><button data-preset="cyborg" class="preset">Cyborg</button><button data-preset="demon" class="preset">Demon</button></div>
+<div class="section-title">FACIAL PROPORTIONS</div>
+<div class="slider-row"><label for="jaw">Jaw width</label><output id="jawOut">0.50</output><input id="jaw" type="range" min="0" max="1" step=".01" value=".5"></div>
+<div class="slider-row"><label for="cheek">Cheek definition</label><output id="cheekOut">0.45</output><input id="cheek" type="range" min="0" max="1" step=".01" value=".45"></div>
+<div class="slider-row"><label for="ears">Ear size</label><output id="earsOut">0.40</output><input id="ears" type="range" min="0" max="1" step=".01" value=".4"></div>
+<div class="slider-row"><label for="fangs">Fang length</label><output id="fangsOut">0.20</output><input id="fangs" type="range" min="0" max="1" step=".01" value=".2"></div>
+<div class="section-title">EXPORT</div><p class="help">Exports the current procedural mesh as Wavefront OBJ. OBJ does not include a rig, blendshapes or animation.</p></section>
+<section class="tab-content" id="tab-surface"><label class="field-label">MATERIAL PRESET</label><div class="presets"><button data-material="porcelain" class="preset active">Porcelain</button><button data-material="graphite" class="preset">Graphite</button><button data-material="gold" class="preset">Gold</button><button data-material="synthetic" class="preset">Synthetic</button></div><div class="section-title">CUSTOM IMAGE TEXTURE</div><label class="upload">Choose image<input id="textureFile" type="file" accept="image/*"></label><p class="help">Image textures are applied locally in this browser. Large images may use additional phone memory.</p><button id="clearTexture" class="quiet">Clear custom texture</button></section>
+<section class="tab-content" id="tab-voice"><label class="field-label">BROWSER SPEECH SYNTHESIS</label><p class="help">Uses voices installed on this device. Mouth movement is approximate jaw animation, not phoneme-accurate lip sync.</p><textarea id="speechText" rows="4" placeholder="Type something for your character to say…">Hello. I am AetherFace.</textarea><div class="voice-actions"><button id="speak" class="primary">Speak</button><button id="stopSpeak" class="quiet">Stop</button></div><label class="slider-row"><label for="voiceRate">Speech rate</label><output id="voiceRateOut">1.0</output><input id="voiceRate" type="range" min=".6" max="1.4" step=".1" value="1"></label><p id="voiceStatus" class="help" aria-live="polite"></p></section>
+<div class="bottom-note"><span class="dot"></span> Local-first studio · no account required</div>
+</aside></main>
+<footer> AETHERFACE 3D <span>Studio preview. AI portrait generation requires a separately configured provider and is not represented as connected.</span></footer>
+<script type="module" src="app.js"></script>
+</body></html>
