@@ -36,12 +36,12 @@ jobs:
           python - <<'PY'
           from html.parser import HTMLParser
           from pathlib import Path
-          import re, sys
+          import re
 
           root = Path('.')
           required = [
-              'index.html', 'app.js', 'styles.css', 'manifest.webmanifest',
-              'start.py', 'start.sh', 'start.bat', 'assets/aetherface-icon.svg'
+              'index.html', 'manifest.webmanifest', 'start.py',
+              'start.sh', 'start.bat', 'assets/aetherface-icon.svg'
           ]
           missing = [p for p in required if not (root / p).is_file()]
           if missing:
@@ -62,26 +62,72 @@ jobs:
           print('PASS: required files, HTML parsing, and local references')
           PY
 
-      - name: Check JavaScript syntax
+      - name: Check active inline JavaScript syntax
         run: |
-          node --input-type=module --check < app.js
-          node --check script.js
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
 
-      - name: Smoke-test local HTTP server
+          class InlineScripts(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.active = False
+                  self.external = False
+                  self.parts = []
+                  self.scripts = []
+              def handle_starttag(self, tag, attrs):
+                  if tag == 'script':
+                      self.active = True
+                      self.external = any(key == 'src' for key, _ in attrs)
+                      self.parts = []
+              def handle_data(self, data):
+                  if self.active and not self.external:
+                      self.parts.append(data)
+              def handle_endtag(self, tag):
+                  if tag == 'script' and self.active:
+                      source = ''.join(self.parts).strip()
+                      if source:
+                          self.scripts.append(source)
+                      self.active = False
+                      self.external = False
+
+          parser = InlineScripts()
+          parser.feed(Path('index.html').read_text(encoding='utf-8'))
+          if not parser.scripts:
+              raise SystemExit('No active inline JavaScript found in index.html')
+          for index, source in enumerate(parser.scripts):
+              Path(f'/tmp/aetherface-inline-{index}.js').write_text(source, encoding='utf-8')
+          print(f'Extracted {len(parser.scripts)} active inline script(s)')
+          PY
+          for script in /tmp/aetherface-inline-*.js; do
+            node --check "$script"
+          done
+
+      - name: Smoke-test server and automatic port fallback
         run: |
-          python start.py --host 127.0.0.1 --port 8765 --no-open > /tmp/aetherface-server.log 2>&1 &
+          python - <<'PY' &
+          import socket, time
+          blocker = socket.socket()
+          blocker.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+          blocker.bind(('127.0.0.1', 8000))
+          blocker.listen()
+          time.sleep(45)
+          PY
+          BLOCKER_PID=$!
+          python start.py --no-open > /tmp/aetherface-server.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          trap 'kill "$SERVER_PID" "$BLOCKER_PID" 2>/dev/null || true' EXIT
           for attempt in $(seq 1 20); do
-            if curl --fail --silent http://127.0.0.1:8765/ -o /tmp/aetherface-index.html; then
+            if curl --fail --silent http://127.0.0.1:8080/ -o /tmp/aetherface-index.html; then
               break
             fi
             sleep 1
           done
           grep -q 'AETHERFACE' /tmp/aetherface-index.html
-          curl --fail --silent http://127.0.0.1:8765/app.js -o /dev/null
-          curl --fail --silent http://127.0.0.1:8765/styles.css -o /dev/null
-          echo 'PASS: app served over HTTP'
+          grep -q 'Port 8000 is already in use' /tmp/aetherface-server.log
+          curl --fail --silent http://127.0.0.1:8080/manifest.webmanifest -o /dev/null
+          curl --fail --silent http://127.0.0.1:8080/assets/aetherface-icon.svg -o /dev/null
+          echo 'PASS: HTTP server starts on 8080 when preferred port 8000 is occupied'
 
       - name: Package distributable
         run: |
