@@ -127,4 +127,6 @@ window.addEventListener('error',e=>{$('engine-status').textContent='Studio error
 window.addEventListener('load',()=>{try{init3D();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});}catch(e){console.error(e);$('engine-status').textContent='3D startup failed: '+e.message;}});
 let installEvent=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;$('install-app').classList.remove('hidden');});$('install-app').addEventListener('click',async()=>{if(!installEvent)return;installEvent.prompt();await installEvent.userChoice;installEvent=null;$('install-app').classList.add('hidden');});
 </script>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
 </body></html>
