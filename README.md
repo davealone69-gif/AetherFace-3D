@@ -1,46 +1,33 @@
 # AetherFace 3D Studio
 
-A local-first browser-based character workshop with a Three.js preview, editable procedural head proportions, material presets, local image-texture upload, browser speech synthesis, PNG capture, and Wavefront OBJ export.
+A browser-based procedural 3D character studio. The original supplied single-page Studio interface is restored in `index.html`; the local launcher, installable web-app manifest and SVG app icon are retained.
 
-## Quick start
+## Start on Android / Termux
 
-**Termux (Android):**
 ```sh
-pkg install python
-cd ~/AetherFace-3D
+pkg install git python -y
+git clone --branch feature/studio-repair-autostart-2026-11-02 https://github.com/davealone69-gif/AetherFace-3D.git
+cd AetherFace-3D
 bash start.sh
 ```
 
-**Windows:** double-click `start.bat`, or run `py -3 start.py`.
+The launcher starts the local HTTP server and attempts to open the browser automatically at `http://127.0.0.1:8000/`. If Android does not open it automatically, open that address manually. Keep Termux running while using the local app.
 
-**Linux/macOS:**
-```sh
-python3 start.py
-```
-
-The launcher starts a local HTTP server on `127.0.0.1:8000` and opens the browser. Use `python start.py --port 8080` to change the port, or `python start.py --no-open` to suppress browser launch. Stop with Ctrl+C.
+Optional: `python start.py --port 8080` or `python start.py --no-open`.
 
 ## Install as an app
 
-Serve the site over localhost or HTTPS, open it in a supported browser, then use the browser's **Install app** / **Add to Home screen** action. The web app manifest and service worker provide the install metadata and offline caching for the local application shell. Three.js and its OBJ exporter are loaded from jsDelivr, so the 3D engine requires internet access unless those dependencies are self-hosted.
+Open the local page in a supported browser and use its Install app / Add to Home Screen command. This is a PWA, not a native Android APK. The included icon is `assets/aetherface-icon.svg`.
 
-## Features and limitations
+## Current capabilities and limitations
 
-- Human, Vampire, Cyborg and Demon starting presets.
-- Jaw, cheek, ear and fang proportion controls.
-- Porcelain, Graphite, Gold and Synthetic material presets.
-- Upload a local image as a face surface texture.
-- Browser SpeechSynthesis with approximate jaw movement. This is not phoneme-accurate lip sync.
-- PNG screenshot and OBJ mesh export.
-- Touch/pointer orbit and wheel zoom.
-- No account, API key or paid service is required for the included features.
+- Procedural 3D head preview with mouse/touch rotation and pinch zoom.
+- Human, vampire, cyborg and demon presets.
+- Jaw, cheek, fang and ear shape controls.
+- Image URL and local image texture loading, plus generated cyber/pallor texture patterns.
+- Browser speech synthesis with approximate jaw movement.
+- PNG snapshot and OBJ mesh export.
+- AI prompt staging only. No image-generation provider or API key is connected.
+- OBJ export is geometry only. It does not provide a rig, blendshapes, animation or a production-ready GLB avatar.
 
-**Not included:** AI portrait generation, server-side AI, a production facial rig, blendshapes, skeletal animation, GLB/GLTF export or photorealistic reconstruction. OBJ export is geometry only and does not package a rig or animation. The generated procedural head is a starter mesh, not a finished production avatar.
-
-## App icon
-
-`assets/aetherface-icon.svg` is the scalable AetherFace 3D app mark. The icon contains no forehead marker/red dot.
-
-## Verification
-
-The repository contains browser code and launch scripts. A successful local server start does not prove WebGL compatibility on every device. Confirm the live preview on the target phone; WebGL and external CDN availability are runtime requirements.
+Three.js and Tailwind are loaded from CDNs, so the first launch requires internet access. Local launcher startup was previously observed in Termux; browser rendering, export behaviour and installation must still be verified on the target phone.
