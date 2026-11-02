@@ -85,7 +85,7 @@ function buildCharacter() {
   // Nose bridge, rounded tip and nostrils, all joined visually to the face.
   ellipsoid([0, 0.00, 0.61], [0.085, 0.23, 0.12], skin);
   ellipsoid([0, -0.15, 0.70], [0.12, 0.085, 0.12], skin);
-  for (const side of [-1, 1]) ellipsoid([side * 0.075, -0.205, 0. seventy || 0.68], [0.032, 0.018, 0.018], darkMaterial);
+  for (const side of [-1, 1]) ellipsoid([side * 0.075, -0.205, 0.68], [0.032, 0.018, 0.018], darkMaterial);
 
   // Mouth, chin and a separate lower jaw make the jaw-width control meaningful.
   jaw = ellipsoid([0, -0.49, 0.43], [0.48, 0.31, 0.22], skin);
