@@ -11,9 +11,9 @@ cd AetherFace-3D
 bash start.sh
 ```
 
-The launcher starts the local HTTP server and attempts to open the browser automatically at `http://127.0.0.1:8000/`. If Android does not open it automatically, open that address manually. Keep Termux running while using the local app.
+The launcher starts the local HTTP server on `127.0.0.1:8000`. If port 8000 is already occupied, it automatically tries `8080`, then `8001` through `8005`, and prints the exact URL it selected. In Termux it uses `termux-open-url` when available; otherwise it falls back to the system browser handler. Keep Termux running while using the local app.
 
-Optional: `python start.py --port 8080` or `python start.py --no-open`.
+Optional: `python start.py --port 8080` to choose a preferred port, or `python start.py --no-open` to suppress browser launch.
 
 ## Install as an app
 
