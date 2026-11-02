@@ -94,6 +94,7 @@ function buildCharacter() {
   lowerLip = ellipsoid([0, -0.405, 0.705], [0.145, 0.032, 0.025], lipMaterial);
   for (const side of [-1, 1]) {
     const fang = mesh(new THREE.ConeGeometry(0.035, 0.16, 20), toothMaterial, [side * 0.105, -0.43, 0.71], [1, 1, 1]);
+    fang.rotation.z = Math.PI; // ConeGeometry's default tip points up; invert it for upper fangs.
     fangs.push(fang);
   }
   applyShape();
