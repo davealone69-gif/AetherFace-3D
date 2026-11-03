@@ -1,101 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AetherFace 3D</title>
-    <meta
-      name="description"
-      content="AetherFace 3D — immersive futuristic interface showcase"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="bg-grid"></div>
-    <div class="aurora aurora-one"></div>
-    <div class="aurora aurora-two"></div>
-
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark">A</span>
-        <span class="brand-text">AetherFace 3D</span>
-      </div>
-      <nav class="nav">
-        <a href="#about">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button class="nav-button">Launch Demo</button>
-    </header>
-
-    <main class="hero">
-      <section class="hero-copy">
-        <p class="eyebrow">NEXT-GEN HUMAN INTERFACE</p>
-        <h1>See identity in motion.</h1>
-        <p class="subtitle">
-          AetherFace 3D blends face-driven emotion mapping, cinematic depth, and
-          immersive UI to create a living digital presence.
-        </p>
-
-        <div class="cta-row">
-          <button class="primary">Enter Experience</button>
-          <button class="secondary">Explore System</button>
-        </div>
-
-        <div class="stats" id="about">
-          <div>
-            <strong>4.8x</strong>
-            <span>faster perception</span>
-          </div>
-          <div>
-            <strong>360°</strong>
-            <span>depth-aware motion</span>
-          </div>
-          <div>
-            <strong>24/7</strong>
-            <span>adaptive presence</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="hero-visual" id="experience">
-        <div class="orbital-shell">
-          <div class="ring ring-one"></div>
-          <div class="ring ring-two"></div>
-          <div class="ring ring-three"></div>
-          <div class="face-card">
-            <div class="face-glow"></div>
-            <div class="face-core">
-              <span class="eye left"></span>
-              <span class="eye right"></span>
-              <span class="smile"></span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <section class="feature-strip" id="contact">
-      <article>
-        <label>Emotive Layers</label>
-        <h3>Adaptive presence engine</h3>
-      </article>
-      <article>
-        <label>Spatial Synthesis</label>
-        <h3>Depth-rich AI visualization</h3>
-      </article>
-      <article>
-        <label>Signal Design</label>
-        <h3>Responsive human interface</h3>
-      </article>
-    </section>
-
-    <script src="script.js"></script>
-  </body>
-</html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0f"><meta name="description" content="AetherFace 3D Studio">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./assets/aetherface-icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./assets/aetherface-icon.svg">
+<title>AetherFace 3D Studio</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+<style>
+body{background:#090a0f;color:#f3f4f6;font-family:system-ui,-apple-system,sans-serif}canvas{display:block;width:100%;height:100%;touch-action:none}#viewport{min-height:300px;touch-action:none}.control-scroll{min-height:0}.hidden{display:none!important}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
+</style>
+</head>
+<body class="h-screen min-h-screen flex flex-col overflow-hidden">
+<header class="bg-gray-900 border-b border-gray-800 p-3 flex justify-between items-center shadow-lg z-10">
+<div class="flex items-center space-x-2"><img src="./assets/aetherface-icon.svg" alt="" class="w-8 h-8"><h1 class="font-bold text-lg tracking-wider text-cyan-400">AETHERFACE <span class="text-purple-400">3D</span></h1></div>
+<div class="flex space-x-2 items-center"><span id="engine-status" class="text-xs text-gray-400 hidden sm:inline">Starting…</span><button id="install-app" class="hidden bg-gray-700 text-white text-xs px-3 py-2 rounded-lg">Install app</button><button onclick="exportOBJModel()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-3 py-2 rounded-lg">Export 3D .OBJ</button><button onclick="snapCanvas()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold px-3 py-2 rounded-lg">Snap View</button></div>
+</header>
+<main class="flex-1 flex flex-col md:flex-row overflow-hidden">
+<section class="relative flex-1 min-h-0 bg-gradient-to-b from-gray-950 via-gray-900 to-black flex items-center justify-center">
+<div id="viewport" class="w-full h-full relative"><div class="absolute bottom-4 left-4 z-10 bg-black/60 px-3 py-2 rounded-lg border border-gray-800 text-xs text-gray-400 pointer-events-none">Touch/Mouse: Rotate & Pinch Zoom</div></div>
+</section>
+<aside class="w-full md:w-96 bg-gray-900 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col h-[52vh] md:h-full z-10">
+<nav class="flex border-b border-gray-800 bg-gray-950 text-xs font-medium shrink-0">
+<button onclick="switchTab('species')" id="tab-btn-species" class="flex-1 py-3 text-center text-cyan-400 border-b-2 border-cyan-400">Presets</button>
+<button onclick="switchTab('morph')" id="tab-btn-morph" class="flex-1 py-3 text-center text-gray-400">Morphs</button>
+<button onclick="switchTab('texture')" id="tab-btn-texture" class="flex-1 py-3 text-center text-gray-400">Textures</button>
+<button onclick="switchTab('voice')" id="tab-btn-voice" class="flex-1 py-3 text-center text-gray-400">Voice & AI</button>
+</nav>
+<div class="flex-1 overflow-y-auto p-4 space-y-4 text-sm control-scroll">
+<section id="tab-species" class="space-y-3"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Archetype Presets</h3><div class="grid grid-cols-2 gap-2">
+<button onclick="applyPreset('human')" class="p-3 bg-gray-800 rounded-xl text-left border border-gray-700"><b class="text-cyan-300">Pure Human</b><div class="text-xs text-gray-400">Standard organic profile</div></button>
+<button onclick="applyPreset('vampire')" class="p-3 bg-gray-800 rounded-xl text-left border border-gray-700"><b class="text-red-400">Vampire Lord</b><div class="text-xs text-gray-400">Pale skin, sharp fangs</div></button>
+<button onclick="applyPreset('cyborg')" class="p-3 bg-gray-800 rounded-xl text-left border border-gray-700"><b class="text-blue-400">Cyborg Assassin</b><div class="text-xs text-gray-400">Titanium-inspired surface</div></button>
+<button onclick="applyPreset('demon')" class="p-3 bg-gray-800 rounded-xl text-left border border-gray-700"><b class="text-purple-400">Neon Demon</b><div class="text-xs text-gray-400">Pointed ears, pronounced features</div></button></div></section>
+<section id="tab-morph" class="space-y-4 hidden"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Bone & Geometry Morphs</h3>
+<div><label class="text-xs text-gray-300 flex justify-between"><span>Jaw Width</span><span id="val-jaw">1.0</span></label><input id="morph-jaw" type="range" min="0.6" max="1.5" step="0.05" value="1.0" oninput="updateMorph('jaw',this.value)" class="w-full accent-cyan-400"></div><div><label class="text-xs text-gray-300 flex justify-between"><span>Cheekbone Elevation</span><span id="val-cheek">1.0</span></label><input id="morph-cheek" type="range" min="0.7" max="1.4" step="0.05" value="1.0" oninput="updateMorph('cheek',this.value)" class="w-full accent-cyan-400"></div><div><label class="text-xs text-gray-300 flex justify-between"><span>Vampire Fangs Length</span><span id="val-fangs">0</span></label><input id="morph-fangs" type="range" min="0" max="1.5" step="0.05" value="0" oninput="updateMorph('fangs',this.value)" class="w-full accent-cyan-400"></div><div><label class="text-xs text-gray-300 flex justify-between"><span>Ear Pointiness (Elf/Vamp)</span><span id="val-ears">0</span></label><input id="morph-ears" type="range" min="0" max="1.2" step="0.05" value="0" oninput="updateMorph('ears',this.value)" class="w-full accent-cyan-400"></div>
+</section>
+<section id="tab-texture" class="space-y-4 hidden"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Image Textures</h3>
+<div><label class="text-xs text-gray-300 block mb-1" for="scrape-url">Load image texture URL</label><div class="flex gap-2"><input type="url" id="scrape-url" placeholder="https://example.com/texture.jpg" class="min-w-0 flex-1 bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-xs"><button onclick="scrapeTexture()" class="bg-cyan-600 px-3 rounded-lg text-xs">Apply</button></div><p class="text-xs text-gray-500 mt-1">The image host must allow browser cross-origin access. This loads a URL, it does not scrape websites.</p></div>
+<div><label class="text-xs text-gray-300 block mb-1">Upload Local Image Texture</label><input type="file" accept="image/*" onchange="uploadLocalTexture(event)" class="w-full text-xs text-gray-400"></div>
+<div><label class="text-xs text-gray-300 block mb-2">Preset Micro-Textures</label><div class="grid grid-cols-2 gap-2"><button onclick="setPresetTexture('cyber')" class="p-2 bg-gray-800 rounded-lg text-xs text-cyan-300">Cyber Circuits</button><button onclick="setPresetTexture('pallor')" class="p-2 bg-gray-800 rounded-lg text-xs text-red-300">Vampire Pallor</button></div></div>
+<button onclick="clearTexture()" class="w-full py-2 bg-gray-800 rounded-lg text-xs">Clear texture</button></section>
+<section id="tab-voice" class="space-y-4 hidden"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Voice Synthesis & Approximate Jaw Animation</h3>
+<textarea id="speech-text" rows="3" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-xs text-white">I am AetherFace. Witness my synthetic evolution.</textarea>
+<div class="grid grid-cols-3 gap-2"><button onclick="setVoicePreset('human')" class="py-2 bg-gray-800 rounded-lg text-xs">Human</button><button onclick="setVoicePreset('vampire')" class="py-2 bg-gray-800 rounded-lg text-xs text-red-300">Vampire</button><button onclick="setVoicePreset('cyborg')" class="py-2 bg-gray-800 rounded-lg text-xs text-blue-300">Cyborg</button></div>
+<div class="flex gap-2"><button onclick="speakAndAnimate()" class="flex-1 py-3 bg-gradient-to-r from-cyan-600 to-purple-600 text-white font-bold rounded-xl">Speak & Animate</button><button onclick="stopSpeaking()" class="px-4 bg-gray-700 rounded-xl">Stop</button></div><p id="voice-status" class="text-xs text-gray-400" aria-live="polite"></p>
+<hr class="border-gray-800"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">AI Prompt Staging</h3><textarea id="prompt-staging" rows="3" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-xs">Photorealistic portrait, cyborg titanium plates, neon cinematic studio lighting, 8k resolution.</textarea><div class="flex gap-2"><button onclick="autoEnhancePrompt()" class="flex-1 py-2 bg-gray-800 text-cyan-400 rounded-lg text-xs">Auto-Enhance</button><button onclick="renderAiPortrait()" class="flex-1 py-2 bg-purple-600 rounded-lg text-xs">AI Portrait</button></div><p class="text-xs text-gray-500">Prompt staging only. No image-generation provider is connected.</p></section>
+</div>
+</aside>
+</main>
+<script>
+let scene,camera,renderer,headGroup,jawMesh,leftEar,rightEar,fangsGroup,cheekMeshes=[],earMeshes=[],mouthMesh;
+let isSpeaking=false, speechUtterance=null, morphValues={jaw:1,cheek:1,fangs:0,ears:0}, voice={pitch:1,rate:1}, textureObjects=[];
+const $=id=>document.getElementById(id);
+const skinMat=new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.72,metalness:.08});
+const detailMat=new THREE.MeshStandardMaterial({color:0x111827,roughness:.6});
+function init3D(){
+ const container=$('viewport');scene=new THREE.Scene();scene.background=new THREE.Color(0x090a0f);
+ camera=new THREE.PerspectiveCamera(45,Math.max(1,container.clientWidth)/Math.max(1,container.clientHeight),.1,100);camera.position.set(0,0,5);
+ renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:false,powerPreference:'high-performance'});
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(container.clientWidth,container.clientHeight);container.appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x303044,1.15));
+ const key=new THREE.DirectionalLight(0x00d9ff,1.25);key.position.set(4,5,6);scene.add(key);
+ const fill=new THREE.DirectionalLight(0xa855f7,.8);fill.position.set(-5,-2,3);scene.add(fill);
+ headGroup=new THREE.Group();scene.add(headGroup);
+ const skull=new THREE.Mesh(new THREE.SphereGeometry(1,48,48),skinMat);skull.scale.set(.8,1.1,.9);headGroup.add(skull);
+ const jawGeo=new THREE.SphereGeometry(1,32,24);jawMesh=new THREE.Mesh(jawGeo,skinMat);jawMesh.position.set(0,-.62,.32);jawMesh.scale.set(.53,.38,.62);headGroup.add(jawMesh);
+ // Nose, eyes and cheek forms give the original procedural character a readable face.
+ addEllipsoid(0,-.12,.88,.105,.22,.16,skinMat);
+ addEllipsoid(0,-.27,.91,.14,.09,.13,skinMat);
+ for(const side of [-1,1]){
+  addEllipsoid(side*.29,.18,.79,.19,.12,.09,detailMat);
+  addEllipsoid(side*.29,.18,.85,.14,.075,.055,new THREE.MeshStandardMaterial({color:0xd8e4ed,roughness:.3}));
+  addEllipsoid(side*.29,.18,.895,.045,.05,.025,new THREE.MeshStandardMaterial({color:0x28b8d0,roughness:.25}));
+  const cheek=addEllipsoid(side*.43,-.22,.66,.22,.15,.12,skinMat);cheekMeshes.push(cheek);
+  const ear=addEllipsoid(side*.77,-.02,0,.13,.25,.12,skinMat);earMeshes.push(ear);
+ }
+ mouthMesh=addEllipsoid(0,-.39,.87,.17,.045,.035,new THREE.MeshStandardMaterial({color:0x260e19,roughness:.7}));
+ fangsGroup=new THREE.Group();headGroup.add(fangsGroup);
+ for(const side of [-1,1]){const tooth=new THREE.Mesh(new THREE.ConeGeometry(.045,.27,16),new THREE.MeshStandardMaterial({color:0xfff2df,roughness:.28}));tooth.position.set(side*.105,-.42,.91);tooth.rotation.z=Math.PI;fangsGroup.add(tooth);}
+ applyMorphs();attachOrbit(container);resizeRenderer();new ResizeObserver(resizeRenderer).observe(container);
+ $('engine-status').textContent='3D preview active';animate();
+}
+function addEllipsoid(x,y,z,sx,sy,sz,mat){const m=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;headGroup.add(m);return m;}
+function applyMorphs(){
+ if(!jawMesh)return;
+ jawMesh.scale.x=.42+morphValues.jaw*.14;
+ cheekMeshes.forEach(m=>m.scale.set(.16+morphValues.cheek*.09,.11+morphValues.cheek*.06,.10));
+ earMeshes.forEach(m=>{m.scale.set(.11,.18+morphValues.ears*.15,.10);m.rotation.z=(m.position.x>0?-1:1)*morphValues.ears*.42;});
+ fangsGroup.children.forEach(m=>{m.scale.y=Math.max(.01,morphValues.fangs);m.visible=morphValues.fangs>.02;});
+}
+function updateMorph(type,val){morphValues[type]=parseFloat(val);$('val-'+type).textContent=Number(val).toFixed(2);applyMorphs();}
+function applyPreset(type){
+ const p={human:[1,1,0,0,0x1f2937],vampire:[.92,1.18,1.35,.3,0xd9d4d8],cyborg:[1.28,.82,.08,.05,0x778b9e],demon:[1.35,1.3,1.5,1.1,0x49345e]}[type]||[1,1,0,0,0x1f2937];
+ ['jaw','cheek','fangs','ears'].forEach((k,i)=>{const v=p[i];morphValues[k]=v;$('morph-'+k).value=v;$('val-'+k).textContent=v.toFixed(2);});
+ skinMat.color.setHex(p[4]);applyMorphs();
+}
+function switchTab(name){['species','morph','texture','voice'].forEach(t=>{$('tab-'+t).classList.toggle('hidden',t!==name);const b=$('tab-btn-'+t);b.className='flex-1 py-3 text-center transition '+(t===name?'text-cyan-400 border-b-2 border-cyan-400':'text-gray-400 hover:text-white');});}
+function animate(){requestAnimationFrame(animate);if(isSpeaking&&jawMesh){jawMesh.rotation.x=Math.sin(performance.now()*.03)*.18;mouthMesh.scale.y=.045+Math.abs(Math.sin(performance.now()*.03))*.035;}else if(jawMesh){jawMesh.rotation.x=THREE.MathUtils.lerp(jawMesh.rotation.x,0,.12);mouthMesh.scale.y=THREE.MathUtils.lerp(mouthMesh.scale.y,.045,.15);}renderer.render(scene,camera);}
+function resizeRenderer(){const c=$('viewport');if(!renderer||!c.clientWidth||!c.clientHeight)return;camera.aspect=c.clientWidth/c.clientHeight;camera.updateProjectionMatrix();renderer.setSize(c.clientWidth,c.clientHeight);}
+function attachOrbit(el){
+ let drag=null,pinchDistance=null;
+ el.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||e.isPrimary){drag={x:e.clientX,y:e.clientY};el.setPointerCapture(e.pointerId);}});
+ el.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;headGroup.rotation.y+=dx*.005;headGroup.rotation.x=THREE.MathUtils.clamp(headGroup.rotation.x+dy*.005,-1,1);drag={x:e.clientX,y:e.clientY};});
+ ['pointerup','pointercancel','lostpointercapture'].forEach(t=>el.addEventListener(t,()=>drag=null));
+ el.addEventListener('wheel',e=>{e.preventDefault();camera.position.z=THREE.MathUtils.clamp(camera.position.z+e.deltaY*.005,2.8,9);},{passive:false});
+ el.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);},{passive:true});
+ el.addEventListener('touchmove',e=>{if(e.touches.length!==2||pinchDistance===null)return;const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);camera.position.z=THREE.MathUtils.clamp(camera.position.z+(pinchDistance-d)*.012,2.8,9);pinchDistance=d;},{passive:true});
+ ['touchend','touchcancel'].forEach(t=>el.addEventListener(t,()=>pinchDistance=null));
+}
+function snapCanvas(){if(!renderer)return;renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(blob)downloadBlob(blob,'aetherface-snapshot.png');},'image/png');}
+function exportOBJModel(){if(!THREE.OBJExporter){alert('OBJ exporter did not load. Check your internet connection and reload.');return;}const data=new THREE.OBJExporter().parse(headGroup);downloadBlob(new Blob([data],{type:'text/plain'}),'AetherFaceModel.obj');}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
+function applyTexture(texture){texture.encoding=THREE.sRGBEncoding;headGroup.traverse(o=>{if(o.isMesh&&o!==jawMesh&&o.geometry.type!=='ConeGeometry'){o.material=o.material.clone();o.material.map=texture;o.material.needsUpdate=true;}});textureObjects.push(texture);}
+function scrapeTexture(){const url=$('scrape-url').value.trim();if(!/^https?:\/\//i.test(url)){alert('Enter a valid http or https image URL.');return;}new THREE.TextureLoader().load(url,applyTexture,undefined,()=>alert('Texture could not load. The image host may block cross-origin access.'));}
+function uploadLocalTexture(event){const file=event.target.files&&event.target.files[0];if(!file)return;const url=URL.createObjectURL(file);new THREE.TextureLoader().load(url,t=>{applyTexture(t);URL.revokeObjectURL(url);},undefined,()=>{URL.revokeObjectURL(url);alert('Could not read that image.');});}
+function setPresetTexture(kind){const c=document.createElement('canvas');c.width=c.height=512;const x=c.getContext('2d');x.fillStyle=kind==='cyber'?'#263e50':'#d8cbd0';x.fillRect(0,0,512,512);if(kind==='cyber'){x.strokeStyle='#28d9ed';x.lineWidth=5;for(let y=24;y<512;y+=64){x.beginPath();x.moveTo(0,y);x.lineTo(180,y);x.lineTo(220,y+28);x.lineTo(512,y+28);x.stroke();}}else{const g=x.createRadialGradient(256,220,20,256,256,300);g.addColorStop(0,'#f4e9ed');g.addColorStop(1,'#987b8b');x.fillStyle=g;x.fillRect(0,0,512,512);}const t=new THREE.CanvasTexture(c);applyTexture(t);}
+function clearTexture(){headGroup.traverse(o=>{if(o.isMesh&&o.material&&o.material.map){o.material.map=null;o.material.needsUpdate=true;}});}
+function speakAndAnimate(){const text=$('speech-text').value.trim();if(!text)return;if(!('speechSynthesis'in window)){ $('voice-status').textContent='Speech synthesis is not supported in this browser.';return;}stopSpeaking();speechUtterance=new SpeechSynthesisUtterance(text);speechUtterance.pitch=voice.pitch;speechUtterance.rate=voice.rate;speechUtterance.onstart=()=>{isSpeaking=true;$('voice-status').textContent='Speaking…';};speechUtterance.onend=speechUtterance.onerror=()=>{isSpeaking=false;$('voice-status').textContent='Speech ended.';};speechSynthesis.speak(speechUtterance);}
+function stopSpeaking(){if('speechSynthesis'in window)speechSynthesis.cancel();isSpeaking=false;}
+function setVoicePreset(type){voice=type==='vampire'?{pitch:.65,rate:.82}:type==='cyborg'?{pitch:1.5,rate:1.15}:{pitch:1,rate:1};}
+function autoEnhancePrompt(){const el=$('prompt-staging');el.value=el.value.trim()+', highly detailed facial anatomy, coherent skin materials, cinematic three-point lighting, physically based rendering, clean composition';}
+function renderAiPortrait(){alert('AI prompt staged. No image-generation provider or API key is connected, so no portrait has been generated.');}
+window.addEventListener('error',e=>{$('engine-status').textContent='Studio error: '+e.message;});
+window.addEventListener('load',()=>{try{init3D();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});}catch(e){console.error(e);$('engine-status').textContent='3D startup failed: '+e.message;}});
+let installEvent=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;$('install-app').classList.remove('hidden');});$('install-app').addEventListener('click',async()=>{if(!installEvent)return;installEvent.prompt();await installEvent.userChoice;installEvent=null;$('install-app').classList.add('hidden');});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+</body></html>
