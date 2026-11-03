@@ -105,19 +105,10 @@ jobs:
 
       - name: Smoke-test server and automatic port fallback
         run: |
-          python - <<'PY' &
-          import socket, time
-          blocker = socket.socket()
-          blocker.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-          blocker.bind(('127.0.0.1', 8000))
-          blocker.listen()
-          time.sleep(45)
-          PY
-          BLOCKER_PID=$!
-          sleep 1
-          python start.py --no-open > /tmp/aetherface-server.log 2>&1 &
+          set -euo pipefail
+          python start.py --no-open > /tmp/aetherface-default.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" "$BLOCKER_PID" 2>/dev/null || true' EXIT
+          trap 'kill "$SERVER_PID" "${BLOCKER_PID:-}" 2>/dev/null || true' EXIT
           for attempt in $(seq 1 20); do
             if curl --fail --silent http://127.0.0.1:8080/ -o /tmp/aetherface-index.html; then
               break
@@ -125,11 +116,32 @@ jobs:
             sleep 1
           done
           grep -q 'AETHERFACE' /tmp/aetherface-index.html
-          grep -q 'Port 8000 is already in use' /tmp/aetherface-server.log
+          grep -q 'running at http://127.0.0.1:8080/' /tmp/aetherface-default.log
           curl --fail --silent http://127.0.0.1:8080/manifest.webmanifest -o /dev/null
           curl --fail --silent http://127.0.0.1:8080/assets/aetherface-icon.svg -o /dev/null
-          echo 'PASS: HTTP server starts on 8080 when preferred port 8000 is occupied'
-
+          kill "$SERVER_PID"
+          wait "$SERVER_PID" 2>/dev/null || true
+          python - <<'PY' &
+          import socket, time
+          blocker = socket.socket()
+          blocker.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+          blocker.bind(('127.0.0.1', 8080))
+          blocker.listen()
+          time.sleep(45)
+          PY
+          BLOCKER_PID=$!
+          sleep 1
+          python start.py --no-open > /tmp/aetherface-fallback.log 2>&1 &
+          SERVER_PID=$!
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:8001/ -o /tmp/aetherface-fallback-index.html; then
+              break
+            fi
+            sleep 1
+          done
+          grep -q 'AETHERFACE' /tmp/aetherface-fallback-index.html
+          grep -q 'Port 8080 is already in use' /tmp/aetherface-fallback.log
+          echo 'PASS: default server uses 8080; occupied 8080 falls back to 8001'
       - name: Package distributable
         run: |
           mkdir -p dist
