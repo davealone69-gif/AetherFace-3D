@@ -102,7 +102,7 @@ function animate(){requestAnimationFrame(animate);if(isSpeaking&&jawMesh){jawMes
 function resizeRenderer(){const c=$('viewport');if(!renderer||!c.clientWidth||!c.clientHeight)return;camera.aspect=c.clientWidth/c.clientHeight;camera.updateProjectionMatrix();renderer.setSize(c.clientWidth,c.clientHeight);}
 function attachOrbit(el){
  let drag=null,pinchDistance=null;
- el.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||e.isPrimary){drag={x:e.clientX,y:e.clientY};el.setPointerCapture(e.pointerId);}});
+ el.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&!e.isPrimary){drag=null;return;}if(e.pointerType==='mouse'||e.isPrimary){drag={x:e.clientX,y:e.clientY};el.setPointerCapture(e.pointerId);}});
  el.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;headGroup.rotation.y+=dx*.005;headGroup.rotation.x=THREE.MathUtils.clamp(headGroup.rotation.x+dy*.005,-1,1);drag={x:e.clientX,y:e.clientY};});
  ['pointerup','pointercancel','lostpointercapture'].forEach(t=>el.addEventListener(t,()=>drag=null));
  el.addEventListener('wheel',e=>{e.preventDefault();camera.position.z=THREE.MathUtils.clamp(camera.position.z+e.deltaY*.005,2.8,9);},{passive:false});
